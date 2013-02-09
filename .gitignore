@@ -1,4 +1,5 @@
 *.class
+*.pdf
 
 # Package Files #
 *.jar
