@@ -13,8 +13,8 @@ public class MyServer {
 
     public void MyServer() {}
 
-	void run() {
-		try {
+    void run() {
+        try {
             //create a serversocket
             sSocket = new ServerSocket(sPort, 10);
 
@@ -34,22 +34,46 @@ public class MyServer {
                 // get first operand
                 Integer op1 = null;
                 do {
-                    sendMessage("Send the first integer operand: ");
-                    op1 = readOperand();
+                    try {
+                        sendMessage("Send the first integer operand: ");
+                        op1 = readOperand();
+                    }
+                    catch(IOException ioe) {
+                        System.err.print("Error: ");
+                        System.err.println(ioe.getMessage());
+                        ioe.printStackTrace();
+                        System.exit(1);
+                    }
                 } while(op1 == null);
 
                 // get the operator
                 sendMessage("Enter the operation you would like performed (+,-,*,/): ");
                 char operator = '\0';
                 do {
-                    operator = readOperator();
+                    try {
+                        operator = readOperator();
+                    }
+                    catch(IOException ioe) {
+                        System.err.print("Error: ");
+                        System.err.println(ioe.getMessage());
+                        ioe.printStackTrace();
+                        System.exit(1);
+                    }
                 } while(operator == '\0');
 
                 // get second operand
                 Integer op2 = null;
                 do {
-                    sendMessage("Send the second integer operand: ");
-                    op2 = readOperand();
+                    try {
+                        sendMessage("Send the second integer operand: ");
+                        op2 = readOperand();
+                    }
+                    catch(IOException ioe) {
+                        System.err.print("Error: ");
+                        System.err.println(ioe.getMessage());
+                        ioe.printStackTrace();
+                        System.exit(1);
+                    }
                 } while(op2 == null);
 
                 sendMessage(op1 + " " + operator + " " + op2 + " = " + doOperation(op1, operator, op2));
@@ -78,7 +102,7 @@ public class MyServer {
         System.out.println("Send message: " + msg);
     }
 
-    private Integer readOperand() {
+    private Integer readOperand() throws IOException {
         String input = "";
         Integer op = null;
 
@@ -92,12 +116,7 @@ public class MyServer {
                 op = Integer.parseInt(br.readLine());
             }
         }
-        catch(IOException ioe) {
-            System.err.print("Error: ");
-            System.err.println(ioe.getMessage());
-            ioe.printStackTrace();
-            System.exit(1); // exit with an error
-        }
+
         catch(NumberFormatException nfe) {
             System.err.print("Error: ");
             System.err.println(nfe.getMessage());
@@ -108,30 +127,21 @@ public class MyServer {
         return op;
     }
 
-    private char readOperator() {
+    private char readOperator() throws IOException {
         String input = "";
         char operator = '\0';
 
-        try {
-            input = br.readLine();
+        input = br.readLine();
 
-            if(input == null) {
-                System.err.println("Error reading the input");
-            }
-            else {
-                operator = input.charAt(0);
-
-                if(operator != '+' && operator != '-' && operator != '*' && operator != '/')
-                    operator = '\0';    // invalid operator
-            }
+        if(input == null) {
+            System.err.println("Error reading the input");
         }
-        catch(IOException ioe) {
-            System.err.print("Error: ");
-            System.err.println(ioe.getMessage());
-            ioe.printStackTrace();
-            System.exit(1);
-        }
+        else {
+            operator = input.charAt(0);
 
+            if(operator != '+' && operator != '-' && operator != '*' && operator != '/')
+                operator = '\0';    // invalid operator
+        }
         return operator;
     }
 
