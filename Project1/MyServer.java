@@ -20,7 +20,7 @@ public class MyServer {
 
             while(true) {
                 //Wait for connection
-                System.out.println("Waiting for connection");
+                System.out.println("Waiting for connection...");
 
                 //accept a connection from the client
                 connection = sSocket.accept();
@@ -34,17 +34,23 @@ public class MyServer {
                 // get first operand
                 Integer op1 = null;
                 do {
-                    sendMessage("Send the first operator");
+                    sendMessage("Send the first integer operand: ");
                     op1 = readOperand();
                 } while(op1 == null);
 
                 // get the operator
-                sendMessage("Enter the operation you would like performed (+,-,*,/)");
-                char operator = readOperator();
+                sendMessage("Enter the operation you would like performed (+,-,*,/): ");
+                char operator = '\0';
+                do {
+                    operator = readOperator();
+                } while(operator == '\0');
 
-                // get the second operator
-                sendMessage("Send the second operator");
-                Integer op2 = readOperand();
+                // get second operand
+                Integer op2 = null;
+                do {
+                    sendMessage("Send the second integer operand: ");
+                    op2 = readOperand();
+                } while(op2 == null);
 
                 sendMessage(op1 + " " + operator + " " + op2 + " = " + doOperation(op1, operator, op2));
             }
@@ -73,18 +79,30 @@ public class MyServer {
     }
 
     private Integer readOperand() {
+        String input = "";
         Integer op = null;
 
         try {
-            op = Integer.parseInt(br.readLine());
+            input = br.readLine();
+
+            if(input == null) {
+                System.err.println("Error reading the input");
+            }
+            else {
+                op = Integer.parseInt(br.readLine());
+            }
         }
         catch(IOException ioe) {
             System.err.print("Error: ");
             System.err.println(ioe.getMessage());
+            ioe.printStackTrace();
+            System.exit(1); // exit with an error
         }
         catch(NumberFormatException nfe) {
             System.err.print("Error: ");
             System.err.println(nfe.getMessage());
+            nfe.printStackTrace();
+            System.exit(1); // exit with an error
         }
 
         return op;
@@ -102,11 +120,16 @@ public class MyServer {
             }
             else {
                 operator = input.charAt(0);
+
+                if(operator != '+' && operator != '-' && operator != '*' && operator != '/')
+                    operator = '\0';    // invalid operator
             }
         }
         catch(IOException ioe) {
             System.err.print("Error: ");
             System.err.println(ioe.getMessage());
+            ioe.printStackTrace();
+            System.exit(1);
         }
 
         return operator;

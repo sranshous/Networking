@@ -14,17 +14,17 @@ public class MyClient {
 
     void run() {
         try {
-            //create a socket to connect to the server
-            requestSocket = new Socket("localhost", 8000);
-			System.out.println("Connected to localhost in port 8000");
-
-            //initialize inputStreams and outputStream
-            br = new BufferedReader(new InputStreamReader(requestSocket.getInputStream()));
-            userInput = new BufferedReader(new InputStreamReader(System.in));
-            pw = new PrintWriter(requestSocket.getOutputStream());
-            pw.flush();
-
             while(true) {
+                //create a socket to connect to the server
+                requestSocket = new Socket("localhost", 8000);
+                System.out.println("Connected to localhost in port 8000");
+
+                //initialize inputStreams and outputStream
+                br = new BufferedReader(new InputStreamReader(requestSocket.getInputStream()));
+                userInput = new BufferedReader(new InputStreamReader(System.in));
+                pw = new PrintWriter(requestSocket.getOutputStream());
+                pw.flush();
+
                 // first operand
                 doServerSendAndReceive();
 
@@ -100,10 +100,11 @@ public class MyClient {
         // receive request
         String serverMessage = receiveServerLine();
         // show it to the user
-        System.out.println(serverMessage);
+        System.out.print(serverMessage);
 
         // read the users input and send it
         String userMessage = receiveUserLine();
+        System.err.println("Sending the message: " + userMessage);
         sendMessage(userMessage);
     }
 
