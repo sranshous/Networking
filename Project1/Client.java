@@ -4,7 +4,7 @@ import java.nio.*;
 import java.nio.channels.*;
 import java.util.*;
 
-public class MyClient {
+public class Client {
     private Socket requestSocket = null;
     private BufferedReader br = null;
     private BufferedReader userInput = null;
@@ -14,25 +14,43 @@ public class MyClient {
 
     void run() {
         try {
-            while(true) {
+            userInput = new BufferedReader(new InputStreamReader(System.in));
+            char connectAgain = 'y';
+
+            while(connectAgain == 'y') {
                 //create a socket to connect to the server
                 requestSocket = new Socket("localhost", 8000);
                 System.out.println("Connected to localhost in port 8000");
 
                 //initialize inputStreams and outputStream
                 br = new BufferedReader(new InputStreamReader(requestSocket.getInputStream()));
-                userInput = new BufferedReader(new InputStreamReader(System.in));
                 pw = new PrintWriter(requestSocket.getOutputStream());
                 pw.flush();
 
                 // first operand
-                doServerSendAndReceive();
+                doServerReceiveAndSend();
 
                 // operator
-                doServerSendAndReceive();
+                doServerReceiveAndSend();
 
                 // second operand
-                doServerSendAndReceive();
+                doServerReceiveAndSend();
+
+                // receive the result
+                System.out.println(receiveServerLine());
+
+                System.out.print("Would you like to do this again? y/[n]: ");
+                String userChoice = receiveUserLine();
+
+                if(userChoice != "" && userChoice != null) {
+                    if(userChoice.charAt(0) == 'y' || userChoice.charAt(0) == 'Y')
+                        connectAgain = 'y';
+                    else
+                        connectAgain = 'n';
+                }
+                else {
+                    connectAgain = 'n';
+                }
             }
         }
         catch (ConnectException e) {
@@ -46,14 +64,21 @@ public class MyClient {
         }
         finally{
             //Close connections
-            try{
-                pw.close();
-                br.close();
-                userInput.close();
-                requestSocket.close();
+            try {
+                if(pw != null)
+                    pw.close();
+                if(br != null)
+                    br.close();
+                if(userInput != null)
+                    userInput.close();
+                if(requestSocket != null)
+                    requestSocket.close();
             }
-            catch(IOException ioException){
-                ioException.printStackTrace();
+            catch(IOException ioe) {
+                System.err.print("Error: ");
+                System.err.println(ioe.getMessage());
+                ioe.printStackTrace();
+                System.exit(1);
             }
         }
     }
@@ -96,7 +121,7 @@ public class MyClient {
         return input;
     }
 
-    private void doServerSendAndReceive() {
+    private void doServerReceiveAndSend() {
         // receive request
         String serverMessage = receiveServerLine();
         // show it to the user
@@ -104,7 +129,6 @@ public class MyClient {
 
         // read the users input and send it
         String userMessage = receiveUserLine();
-        System.err.println("Sending the message: " + userMessage);
         sendMessage(userMessage);
     }
 
@@ -112,12 +136,11 @@ public class MyClient {
     void sendMessage(String msg) {
         pw.println(msg);
         pw.flush();
-        System.out.println("Send message: " + msg);
     }
 
     //main method
     public static void main(String args[]) {
-        MyClient client = new MyClient();
+        Client client = new Client();
         client.run();
     }
 }

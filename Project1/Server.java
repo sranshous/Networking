@@ -4,7 +4,7 @@ import java.nio.*;
 import java.nio.channels.*;
 import java.util.*;
 
-public class MyServer {
+public class Server {
     private final int sPort = 8000;
     private ServerSocket sSocket = null;
     private Socket connection = null;
@@ -45,12 +45,13 @@ public class MyServer {
                         System.exit(1);
                     }
                 } while(op1 == null);
+                System.out.println("operand 1: " + op1);
 
                 // get the operator
-                sendMessage("Enter the operation you would like performed (+,-,*,/): ");
                 char operator = '\0';
                 do {
                     try {
+                        sendMessage("Enter the operation you would like performed (+,-,*,/): ");
                         operator = readOperator();
                     }
                     catch(IOException ioe) {
@@ -60,6 +61,7 @@ public class MyServer {
                         System.exit(1);
                     }
                 } while(operator == '\0');
+                System.out.println("operator: " + operator);
 
                 // get second operand
                 Integer op2 = null;
@@ -75,6 +77,7 @@ public class MyServer {
                         System.exit(1);
                     }
                 } while(op2 == null);
+                System.out.println("operand 2: " + op2);
 
                 sendMessage(op1 + " " + operator + " " + op2 + " = " + doOperation(op1, operator, op2));
             }
@@ -85,12 +88,18 @@ public class MyServer {
         finally {
             //Close connections
             try {
-                pw.close();
-                br.close();
-                sSocket.close();
+                if(pw != null)
+                    pw.close();
+                if(br != null)
+                    br.close();
+                if(sSocket != null)
+                    sSocket.close();
             }
-            catch(IOException ioException) {
-                ioException.printStackTrace();
+            catch(IOException ioe) {
+                System.err.print("Error: ");
+                System.err.println(ioe.getMessage());
+                ioe.printStackTrace();
+                System.exit(1);
             }
         }
     }
@@ -99,7 +108,6 @@ public class MyServer {
     private void sendMessage(String msg) {
         pw.println(msg);
         pw.flush();
-        System.out.println("Send message: " + msg);
     }
 
     private Integer readOperand() throws IOException {
@@ -111,9 +119,10 @@ public class MyServer {
 
             if(input == null) {
                 System.err.println("Error reading the input");
+                throw new IOException("Input read was null");
             }
             else {
-                op = Integer.parseInt(br.readLine());
+                op = Integer.parseInt(input);
             }
         }
 
@@ -148,7 +157,6 @@ public class MyServer {
     // this returns 0 by default also, which is wrong it should use Integer and
     // return null on an error but bleh
     private int doOperation(Integer op1, char operator, Integer op2) {
-        System.out.print("op1: " + op1 + "\toperator: " + operator + "\top1: " + op1);
         int result = 0;
 
         switch(operator) {
@@ -168,12 +176,12 @@ public class MyServer {
                 result = 0;
         }
 
-        System.out.println("\tresult: " + result);
+        System.out.println("Result: " + result);
         return result;
     }
 
  	public static void main(String args[]) {
-        MyServer s = new MyServer();
+        Server s = new Server();
         s.run();
     }
 }
