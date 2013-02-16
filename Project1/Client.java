@@ -4,63 +4,39 @@ import java.nio.*;
 import java.nio.channels.*;
 import java.util.*;
 
-public class Client {
-    Socket requestSocket;           //socket connect to the server
-    ObjectOutputStream out;         //stream write to the socket
-    ObjectInputStream in;          //stream read from the socket
-    String message_sent;                //message send to the server
-    String message_received;                //capitalized message read from the server
+public class MyClient {
+    private Socket requestSocket = null;
+    private BufferedReader br = null;
+    private BufferedReader userInput = null;
+    private PrintWriter pw = null;
 
-    public void Client() {}
+    public void MyClient() {}
 
     void run() {
         try {
-            //create a socket to connect to the server
-            requestSocket = new Socket("localhost", 8000);
-			System.out.println("Connected to localhost in port 8000");
-            //initialize inputStream and outputStream
-            out = new ObjectOutputStream(requestSocket.getOutputStream());
-            out.flush();
-            in = new ObjectInputStream(requestSocket.getInputStream());
-
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
             while(true) {
-                // Get first message
-                message_received = (String)in.readObject();
-                System.out.println(message_received);
+                //create a socket to connect to the server
+                requestSocket = new Socket("localhost", 8000);
+                System.out.println("Connected to localhost in port 8000");
 
-                //read a sentence from the standard input
-                message_sent = bufferedReader.readLine();
+                //initialize inputStreams and outputStream
+                br = new BufferedReader(new InputStreamReader(requestSocket.getInputStream()));
+                userInput = new BufferedReader(new InputStreamReader(System.in));
+                pw = new PrintWriter(requestSocket.getOutputStream());
+                pw.flush();
 
-                //Send the operand to the server
-                sendMessage(message_sent);
+                // first operand
+                doServerSendAndReceive();
 
-                // Get second message
-                message_received = (String)in.readObject();
-                System.out.println(message_received);
+                // operator
+                doServerSendAndReceive();
 
-                //read a sentence from the standard input
-                message_sent = bufferedReader.readLine();
-
-                //Send the operator to the server
-                sendMessage(message_sent);
-
-                // Get first message
-                message_received = (String)in.readObject();
-                System.out.println(message_received);
-
-                //read a sentence from the standard input
-                message_sent = bufferedReader.readLine();
-
-                //Send the operand to the server
-                sendMessage(message_sent);
+                // second operand
+                doServerSendAndReceive();
             }
         }
         catch (ConnectException e) {
             System.err.println("Connection refused. You need to initiate a server first.");
-        }
-        catch (ClassNotFoundException e) {
-            System.err.println("Class not found");
         }
         catch(UnknownHostException unknownHost){
             System.err.println("You are trying to connect to an unknown host!");
@@ -71,8 +47,9 @@ public class Client {
         finally{
             //Close connections
             try{
-                in.close();
-                out.close();
+                pw.close();
+                br.close();
+                userInput.close();
                 requestSocket.close();
             }
             catch(IOException ioException){
@@ -81,22 +58,66 @@ public class Client {
         }
     }
 
+    private String receiveServerLine() {
+        String input = "";
+
+        try {
+            input = br.readLine();
+
+            if(input == null) {
+                System.err.println("Error reading the input from the server");
+                input = "";
+            }
+        }
+        catch(IOException ioe) {
+            System.err.print("Error: ");
+            System.err.println(ioe.getMessage());
+        }
+
+        return input;
+    }
+
+    private String receiveUserLine() {
+        String input = "";
+
+        try {
+            input = userInput.readLine();
+
+            if(input == null) {
+                System.err.println("Error reading the input from the server");
+                input = "";
+            }
+        }
+        catch(IOException ioe) {
+            System.err.print("Error: ");
+            System.err.println(ioe.getMessage());
+        }
+
+        return input;
+    }
+
+    private void doServerSendAndReceive() {
+        // receive request
+        String serverMessage = receiveServerLine();
+        // show it to the user
+        System.out.print(serverMessage);
+
+        // read the users input and send it
+        String userMessage = receiveUserLine();
+        System.err.println("Sending the message: " + userMessage);
+        sendMessage(userMessage);
+    }
+
     //send a message to the output stream
     void sendMessage(String msg) {
-        try{
-        //stream write the message
-        out.writeObject(msg);
-        out.flush();
+        pw.println(msg);
+        pw.flush();
         System.out.println("Send message: " + msg);
-        }
-        catch(IOException ioException){
-            ioException.printStackTrace();
-        }
     }
 
     //main method
     public static void main(String args[]) {
-        Client client = new Client();
+        MyClient client = new MyClient();
         client.run();
     }
 }
