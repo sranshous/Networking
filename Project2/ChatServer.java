@@ -4,24 +4,20 @@ import java.nio.*;
 import java.nio.channels.*;
 import java.util.*;
 
-public class ChatServer {
+public class ChatServer implements Runnable {
     // the port to listen on for clients to connect
     private final int SOCKET_PORT = 8000;
     // the socket that the clients will connect to
-    private final ServerSocket serverSocket;
-    // to read the input from the socket as strings
-    private final BufferedReader br;
-    // to write to the socket
-    private final PrintWriter pw;
+    private ServerSocket serverSocket;
 
     /**
-     * Create the chat server.
+     * Create the chat server and it will listen on port 8000.
      */
     public void ChatServer() {
-        // Default constructor
+        // Do nothing
     }
 
-    void run() {
+    public void run() {
         try {
             //create a serversocket
             serverSocket = new ServerSocket(SOCKET_PORT, 10);
@@ -31,18 +27,27 @@ public class ChatServer {
                 System.out.println("Waiting for connection...");
 
                 // accept a connection from the client
-                connection = serverSocket.accept();
+                Socket connection = serverSocket.accept();
                 System.out.println("Connection received from " +
                                     connection.getInetAddress().getHostName() +
                                     "\nSplitting it into a thread"
                 );
+
+                // Spawn a new thread to handle the connection
+                Thread clientHandler = new Thread(new ChatServerThread(connection));
+                clientHandler.start();
             }
         }
-        catch(IOException ioException){
-            ioException.printStackTrace();
+        catch(IOException ioe){
+            ioe.printStackTrace();
         }
         finally {
-            serverSocket.close();
+            try {
+                serverSocket.close();
+            }
+            catch(IOException ioe) {
+                // it must be closed already, do nothing
+            }
         }
     }
 
