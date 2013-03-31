@@ -5,52 +5,81 @@ import java.nio.channels.*;
 import java.util.*;
 
 public class Server {
-    private final int sPort = 8000;    //The server will be listening on this port number
-    ServerSocket sSocket;   //serversocket used to lisen on port number 8000
-    Socket connection = null; //socket for the connection with the client
-    String message_sent;    //message received from the client
-    String message_received;    //uppercase message send to the client
-    ObjectOutputStream out;  //stream write to the socket
-    ObjectInputStream in;    //stream read from the socket
+    private final int sPort = 8000;
+    private ServerSocket sSocket = null;
+    private Socket connection = null;
+    private BufferedReader br = null;
+    private PrintWriter pw = null;
 
-    public void Server() {}
+    public void MyServer() {}
 
-	void run() {
-		try {
+    void run() {
+        try {
             //create a serversocket
             sSocket = new ServerSocket(sPort, 10);
-            //Wait for connection
-            System.out.println("Waiting for connection");
 
-            //accept a connection from the client
-            connection = sSocket.accept();
-            System.out.println("Connection received from " + connection.getInetAddress().getHostName());
+            while(true) {
+                //Wait for connection
+                System.out.println("Waiting for connection...");
 
-            //initialize Input and Output streams
-            out = new ObjectOutputStream(connection.getOutputStream());
-            out.flush();
-            in = new ObjectInputStream(connection.getInputStream());
+                //accept a connection from the client
+                connection = sSocket.accept();
+                System.out.println("Connection received from " + connection.getInetAddress().getHostName());
 
-           try {
-                while(true) {
-                    sendMessage("Please send the first operand: ");
-                    Integer op1 = Integer.parseInt((String)in.readObject()); // assumes its not null
-                    System.out.println("op1: " + op1);
+                //initialize Input and Output streams
+                pw = new PrintWriter(connection.getOutputStream());
+                pw.flush();
+                br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 
-                    //send MESSAGE back to the client
-                    sendMessage("Please send the operator (+,-,*,/): ");
-                    char operator = ((String)in.readObject()).charAt(0); // assumes its not null
-                    System.out.println("operator: " + operator);
+                // get first operand
+                Integer op1 = null;
+                do {
+                    try {
+                        sendMessage("Send the first integer operand: ");
+                        op1 = readOperand();
+                    }
+                    catch(IOException ioe) {
+                        System.err.print("Error: ");
+                        System.err.println(ioe.getMessage());
+                        ioe.printStackTrace();
+                        System.exit(1);
+                    }
+                } while(op1 == null);
+                System.out.println("operand 1: " + op1);
 
-                    sendMessage("Please send the second operand: ");
-                    Integer op2 = Integer.parseInt((String)in.readObject()); // assumes its not null
-                    System.out.println("op2: " + op2);
+                // get the operator
+                char operator = '\0';
+                do {
+                    try {
+                        sendMessage("Enter the operation you would like performed (+,-,*,/): ");
+                        operator = readOperator();
+                    }
+                    catch(IOException ioe) {
+                        System.err.print("Error: ");
+                        System.err.println(ioe.getMessage());
+                        ioe.printStackTrace();
+                        System.exit(1);
+                    }
+                } while(operator == '\0');
+                System.out.println("operator: " + operator);
 
-                    sendMessage("The result is: " + doOperation(op1, operator, op2));
-                }
-            }
-            catch(ClassNotFoundException classnot) {
-                System.err.println("Data received in unknown format");
+                // get second operand
+                Integer op2 = null;
+                do {
+                    try {
+                        sendMessage("Send the second integer operand: ");
+                        op2 = readOperand();
+                    }
+                    catch(IOException ioe) {
+                        System.err.print("Error: ");
+                        System.err.println(ioe.getMessage());
+                        ioe.printStackTrace();
+                        System.exit(1);
+                    }
+                } while(op2 == null);
+                System.out.println("operand 2: " + op2);
+
+                sendMessage(op1 + " " + operator + " " + op2 + " = " + doOperation(op1, operator, op2));
             }
         }
         catch(IOException ioException){
@@ -59,32 +88,75 @@ public class Server {
         finally {
             //Close connections
             try {
-                in.close();
-                out.close();
-                sSocket.close();
+                if(pw != null)
+                    pw.close();
+                if(br != null)
+                    br.close();
+                if(sSocket != null)
+                    sSocket.close();
             }
-            catch(IOException ioException) {
-                ioException.printStackTrace();
+            catch(IOException ioe) {
+                System.err.print("Error: ");
+                System.err.println(ioe.getMessage());
+                ioe.printStackTrace();
+                System.exit(1);
             }
         }
     }
 
     //send a message to the output stream
-    void sendMessage(String msg) {
+    private void sendMessage(String msg) {
+        pw.println(msg);
+        pw.flush();
+    }
+
+    private Integer readOperand() throws IOException {
+        String input = "";
+        Integer op = null;
+
         try {
-            out.writeObject(msg);
-            out.flush();
-            System.out.println("Send message: " + msg);
+            input = br.readLine();
+
+            if(input == null) {
+                System.err.println("Error reading the input");
+                throw new IOException("Input read was null");
+            }
+            else {
+                op = Integer.parseInt(input);
+            }
         }
-        catch(IOException ioException) {
-            ioException.printStackTrace();
+
+        catch(NumberFormatException nfe) {
+            System.err.print("Error: ");
+            System.err.println(nfe.getMessage());
+            nfe.printStackTrace();
+            System.exit(1); // exit with an error
         }
+
+        return op;
+    }
+
+    private char readOperator() throws IOException {
+        String input = "";
+        char operator = '\0';
+
+        input = br.readLine();
+
+        if(input == null) {
+            System.err.println("Error reading the input");
+        }
+        else {
+            operator = input.charAt(0);
+
+            if(operator != '+' && operator != '-' && operator != '*' && operator != '/')
+                operator = '\0';    // invalid operator
+        }
+        return operator;
     }
 
     // this returns 0 by default also, which is wrong it should use Integer and
     // return null on an error but bleh
     private int doOperation(Integer op1, char operator, Integer op2) {
-        System.out.println("op1: " + op1 + "\toperator: " + operator + "\top1: " + op1);
         int result = 0;
 
         switch(operator) {
@@ -104,6 +176,7 @@ public class Server {
                 result = 0;
         }
 
+        System.out.println("Result: " + result);
         return result;
     }
 
