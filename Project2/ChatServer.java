@@ -8,7 +8,7 @@ public class ChatServer implements Runnable {
     // the port to listen on for clients to connect
     private final int SOCKET_PORT = 8000;
     // the socket that the clients will connect to
-    private ServerSocket serverSocket;
+    private ServerSocket serverSocket = null;
 
     /**
      * Create the chat server and it will listen on port 8000.

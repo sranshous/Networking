@@ -3,19 +3,22 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.SocketException;
 
 public class ChatServerThread implements Runnable {
     private final Socket THREAD_SOCKET;
-    private final String MENU = "Welcome! Please select an option\n" +
+    private final String MENU = "\nWelcome! Please select an option\n" +
                                 "1. Get the list of logged in users\n" +
                                 "2. Send a message\n" +
                                 "3. Check my messages\n" +
                                 "4. Chat with a friend\n";
     private final Integer NUM_MENU_OPTIONS = 4;
     // to read the input from the socket as strings
-    private BufferedReader br;
+    private BufferedReader br = null;
     // to write to the socket
-    private PrintWriter pw;
+    private PrintWriter pw = null;
+    // while true thread keeps going
+    private volatile boolean running = true;
 
     /**
      * Create a thread to handle a connection to the chat server.
@@ -45,7 +48,7 @@ public class ChatServerThread implements Runnable {
             return; // ends thread
         }
 
-        while(true) {
+        while(running) {
             send(MENU);
             String userInput = receiveLine();
             handleChoice(userInput);
@@ -58,7 +61,7 @@ public class ChatServerThread implements Runnable {
      */
     private void send(String msg) {
         pw.println(msg);
-        System.out.println("Send: " + msg);
+        System.out.println("[Debug] Send: " + msg);
     }
 
     /**
@@ -70,6 +73,11 @@ public class ChatServerThread implements Runnable {
 
         try {
             input = br.readLine();
+            System.out.println("Input was: " + input);
+        }
+        catch(SocketException se) {
+            System.err.print("Socket Error: ");
+            System.err.println(se.getMessage());
         }
         catch(IOException ioe) {
             System.err.print("Error: ");
@@ -77,7 +85,9 @@ public class ChatServerThread implements Runnable {
         }
 
         if(input == null) {
-            System.err.println("Error reading the input");
+            System.err.println("Error reading the input. " +
+                               "Assuming the client disconnected.");
+            this.running = false;
         }
         else {
             /* This is where the input message is handled */
@@ -100,6 +110,9 @@ public class ChatServerThread implements Runnable {
         }
 
         switch(option) {
+            case -1:
+                System.out.println("-1 sent, EOF.");
+                System.exit(1);
             case 1:
                 break;
             case 2:
@@ -121,7 +134,7 @@ public class ChatServerThread implements Runnable {
      * @return The Integer representing the user choice.
      */
     private Integer getUserOption(String userInput) {
-        if(userInput.length() == 0)
+        if(userInput == null || userInput.length() == 0)
             return null;
 
         char op = userInput.charAt(0);
