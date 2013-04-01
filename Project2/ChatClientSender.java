@@ -17,12 +17,19 @@ public class ChatClientSender implements Runnable {
         this.pw = pw;
     }
 
+    /**
+     * Run forever.
+     */
     public void run() {
         while(true) {
             send();
         }
     }
 
+    /**
+     * Read a line from the user using the BufferedReader.
+     * @return The line read from the user.
+     */
     private String receiveUserLine() {
         String input = "";
 
@@ -42,14 +49,16 @@ public class ChatClientSender implements Runnable {
         return input;
     }
 
+    /**
+     * Send a string over the socket connection after reading it from the user.
+     */
     private void send() {
         // read the users input and send it
         String userMessage = receiveUserLine();
         sendMessage(userMessage);
     }
 
-    //send a message to the output stream
-    void sendMessage(String msg) {
+    private void sendMessage(String msg) {
         pw.println(msg);
         System.out.println("[Debug] Send message: " + msg);
     }
