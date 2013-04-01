@@ -78,6 +78,7 @@ public class ChatServerThread implements Runnable {
         catch(SocketException se) {
             System.err.print("Socket Error: ");
             System.err.println(se.getMessage());
+            this.running = false; // socket problem, close the thread
         }
         catch(IOException ioe) {
             System.err.print("Error: ");
@@ -111,15 +112,19 @@ public class ChatServerThread implements Runnable {
 
         switch(option) {
             case -1:
-                System.out.println("-1 sent, EOF.");
+                System.err.println("-1 sent, EOF.");
                 System.exit(1);
             case 1:
+                System.err.println("Option 1 chosen.");
                 break;
             case 2:
+                System.err.println("Option 2 chosen.");
                 break;
             case 3:
+                System.err.println("Option 3 chosen.");
                 break;
             case 4:
+                System.err.println("Option 4 chosen.");
                 break;
             default:
                 System.err.println("Did not choose a valid option.");
