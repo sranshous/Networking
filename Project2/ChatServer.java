@@ -30,6 +30,10 @@ public class ChatServer implements Runnable {
                 Socket connection = serverSocket.accept();
                 System.out.println("Connection received from " +
                                     connection.getInetAddress().getHostName() +
+                                    " with IP address " +
+                                    connection.getInetAddress().getHostAddress() +
+                                    " on port " +
+                                    connection.getPort() +
                                     "\nSplitting it into a thread"
                 );
 
