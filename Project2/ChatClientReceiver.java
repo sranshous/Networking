@@ -5,6 +5,10 @@ public class ChatClientReceiver implements Runnable {
     private final BufferedReader br;
     private volatile boolean running = true;
 
+    /**
+     * Create a receiver thread.
+     * @param br The BufferedReader to read from the socket.
+     */
     public ChatClientReceiver(BufferedReader br) {
         this.br = br;
     }
