@@ -10,6 +10,7 @@ public class ChatClient {
     private BufferedReader userInput = null;
     private PrintWriter pw = null;
     private Thread receiver = null;
+    private Thread sender = null;
 
     public void ChatClient() {
 
@@ -30,10 +31,13 @@ public class ChatClient {
 
             receiver = new Thread(new ChatClientReceiver(br));
             receiver.start();
+            sender = new Thread(new ChatClientSender(userInput, pw));
+            sender.start();
 
             while(true) {
-                // this is the sender
-                send();
+                // accept incoming connections to chat and do something.
+                // need to be able to chat to different connections ultimately
+                // which will require multiple windows (in the form of a GUI)
             }
         }
         catch (ConnectException e) {
@@ -57,38 +61,6 @@ public class ChatClient {
                 ioException.printStackTrace();
             }
         }
-    }
-
-    private String receiveUserLine() {
-        String input = "";
-
-        try {
-            input = userInput.readLine();
-
-            if(input == null) {
-                System.err.println("Error reading the input from the server");
-                input = "";
-            }
-        }
-        catch(IOException ioe) {
-            System.err.print("Error: ");
-            System.err.println(ioe.getMessage());
-        }
-
-        return input;
-    }
-
-    private void send() {
-        // read the users input and send it
-        String userMessage = receiveUserLine();
-        sendMessage(userMessage);
-    }
-
-    //send a message to the output stream
-    void sendMessage(String msg) {
-        pw.println(msg);
-        pw.flush();
-        System.out.println("[Debug] Send message: " + msg);
     }
 
     //main method
