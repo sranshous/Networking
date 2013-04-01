@@ -58,6 +58,9 @@ public class ChatClientSender implements Runnable {
         sendMessage(userMessage);
     }
 
+    /**
+     * The helper method to actually send the message over the socket.
+     */
     private void sendMessage(String msg) {
         pw.println(msg);
         System.out.println("[Debug] Send message: " + msg);
