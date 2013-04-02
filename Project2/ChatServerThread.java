@@ -1,18 +1,29 @@
+/**
+ * Handler thread for dealing with clients that connect to the ChatServer.
+ * It will prompt them for a login, then present them with a menu of options
+ * for them to choose from.
+ * @author Stephen Ranshous
+ * @see ChatServer
+ */
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ChatServerThread implements Runnable {
     private final Socket THREAD_SOCKET;
+    // list of users logged in
+    private final ConcurrentHashMap<String, User> users;
     private final String MENU = "\nWelcome! Please select an option\n" +
                                 "1. Get the list of logged in users\n" +
                                 "2. Send a message\n" +
                                 "3. Check my messages\n" +
                                 "4. Chat with a friend\n";
     private final Integer NUM_MENU_OPTIONS = 4;
+
     // to read the input from the socket as strings
     private BufferedReader br = null;
     // to write to the socket
@@ -24,9 +35,12 @@ public class ChatServerThread implements Runnable {
      * Create a thread to handle a connection to the chat server.
      * @param threadSocket The socket which the server has accepted and is
      * handing off to this thread to handle
+     * @param users The map of users logged in
      */
-    public ChatServerThread(Socket threadSocket) {
+    public ChatServerThread(final Socket threadSocket,
+                            final ConcurrentHashMap<String, User> users) {
         this.THREAD_SOCKET = threadSocket;
+        this.users = users;
     }
 
     /**
