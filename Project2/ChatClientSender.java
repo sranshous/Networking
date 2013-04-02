@@ -1,3 +1,9 @@
+/**
+ * A sender thread for the chat client. It will block on a BufferedReader
+ * call to readLine and when it receives a line it will send it over the
+ * socket.
+ * @author Stephen Ranshous
+ */
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -12,7 +18,7 @@ public class ChatClientSender implements Runnable {
      * @param br The buffered reader to read from the user.
      * @param pw PrintWriter that is used for writing to the socket.
      */
-    public ChatClientSender(BufferedReader br, PrintWriter pw) {
+    public ChatClientSender(final BufferedReader br, final PrintWriter pw) {
         this.br = br;
         this.pw = pw;
     }
@@ -21,7 +27,7 @@ public class ChatClientSender implements Runnable {
      * Run forever.
      */
     public void run() {
-        while(true) {
+        while(running) {
             send();
         }
     }
@@ -39,11 +45,13 @@ public class ChatClientSender implements Runnable {
             if(input == null) {
                 System.err.println("Error reading the input from the server");
                 input = "";
+                this.running = false;
             }
         }
         catch(IOException ioe) {
             System.err.print("Error: ");
             System.err.println(ioe.getMessage());
+            System.exit(1);
         }
 
         return input;
