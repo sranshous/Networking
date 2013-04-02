@@ -1,7 +1,11 @@
-import java.util.*;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
+import javax.swing.JButton;
+import javax.swing.JEditorPane;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 
 public class ChatWindow extends JFrame {
     // this will be the container panel for the GUI, using BorderLayout
@@ -42,7 +46,7 @@ public class ChatWindow extends JFrame {
         center = new JPanel();
         chatDisplay = new JEditorPane();
         chatScroller = new JScrollPane(chatDisplay);
-        chatDisplay.setPreferredSize(new Dimension(580, 300));
+        chatDisplay.setPreferredSize(new Dimension(580, 330));
         chatDisplay.setEditable(false);
         center.add(chatScroller);
     }
