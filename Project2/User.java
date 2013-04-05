@@ -38,4 +38,8 @@ public class User {
     public int getPort() {
         return userPort;
     }
+
+    public String getName() {
+        return name;
+    }
 }

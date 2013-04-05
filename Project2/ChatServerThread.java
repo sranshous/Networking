@@ -12,12 +12,13 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.Map;
 
 public class ChatServerThread implements Runnable {
     private final Socket THREAD_SOCKET;
     // list of users logged in
     private final ConcurrentHashMap<String, User> users;
-    private final String MENU = "\nWelcome! Please select an option\n" +
+    private final String MENU = "\nPlease select an option\n" +
                                 "1. Get the list of logged in users\n" +
                                 "2. Send a message\n" +
                                 "3. Check my messages\n" +
@@ -30,6 +31,9 @@ public class ChatServerThread implements Runnable {
     private PrintWriter pw = null;
     // while true thread keeps going
     private volatile boolean running = true;
+    private String username;
+    // the user this thread is talking to
+    private User connectedUser = null;
 
     /**
      * Create a thread to handle a connection to the chat server.
@@ -93,6 +97,7 @@ public class ChatServerThread implements Runnable {
         catch(SocketException se) {
             System.err.print("Socket Error: ");
             System.err.println(se.getMessage());
+            users.remove(username);
             this.running = false; // socket problem, close the thread
         }
         catch(IOException ioe) {
@@ -103,6 +108,7 @@ public class ChatServerThread implements Runnable {
         if(input == null) {
             System.err.println("Error reading the input. " +
                                "Assuming the client disconnected.");
+            users.remove(username);
             this.running = false;
         }
         else {
@@ -131,8 +137,13 @@ public class ChatServerThread implements Runnable {
                 System.exit(1);
             case 1:
                 // iterate over the user map and send it over the socket
-                // StringBuilder userList = new StringBuilder();
-                System.err.println("Option 1 chosen.");
+                StringBuilder userList = new StringBuilder();
+                userList.append("Users currently logged on:\n");
+                for(Map.Entry<String, User> userX : users.entrySet()) {
+                    userList.append(userX.getKey() + "\n");
+                }
+                //System.err.println("Option 1 chosen.");
+                send(userList.toString());
                 break;
             case 2:
                 System.err.println("Option 2 chosen.");
@@ -168,7 +179,7 @@ public class ChatServerThread implements Runnable {
 
     private void userLogin() {
         send("Please enter your username: ");
-        String username = receiveLine();
+        username = receiveLine();
 
         while(users.containsKey(username)) {
             send("Sorry that username is taken. Please enter a new username: ");
@@ -179,7 +190,7 @@ public class ChatServerThread implements Runnable {
         // already a user with this login
 
         // some sort of validation perhaps
-        User connectedUser = new User(
+        connectedUser = new User(
                 username,
                 THREAD_SOCKET.getInetAddress(),
                 THREAD_SOCKET.getPort()
