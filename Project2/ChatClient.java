@@ -65,13 +65,18 @@ public class ChatClient {
         String portS = readUserLine();
         Integer port = null;
 
-        try {
-            port = Integer.parseInt(portS);
+        if(portS.equals("")) {
+            port = 8000;
         }
-        catch(NumberFormatException nfe) {
-            System.out.print("Error: ");
-            System.out.println(nfe.getMessage());
-            System.exit(1);
+        else {
+            try {
+                port = Integer.parseInt(portS);
+            }
+            catch(NumberFormatException nfe) {
+                System.out.print("Error: ");
+                System.out.println(nfe.getMessage());
+                System.exit(1);
+            }
         }
 
         return port;
@@ -92,12 +97,12 @@ public class ChatClient {
             // Get the IP and port from the user. If they just hit Enter Enter
             // then use the default IP of localhost and port 8000.
             String userIP = getIP();
-            this.IP = (userIP.equals("") ? "localhost" : userIP);
+            this.IP = (userIP.equals("") ? "127.0.0.1" : userIP);
             Integer userPort = getPort();
             this.port = (userPort == null ? 8000 : userPort);
 
             requestSocket = new Socket(IP, port);
-            System.out.format("Connected to %s on port %d", IP, port);
+            System.out.format("Connected to %s on port %d\n", IP, port);
 
             br = new BufferedReader(
                     new InputStreamReader(requestSocket.getInputStream())

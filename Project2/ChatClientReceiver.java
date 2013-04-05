@@ -23,23 +23,48 @@ public class ChatClientReceiver implements Runnable {
      * Run forever waiting for input from the socket to print to the screen.
      */
     public void run() {
-        try {
-            String line = br.readLine();
-            while(true) {
-                System.out.println(line);
-                line = br.readLine();
+        login();
+        String line = receiveLine();
+        while(true) {
+            line = receiveLine();
+            System.out.println(line);
+        }
+    }
 
-                if(line == null) {
-                    // assume the server quit abruptly so we should exit
-                    System.err.println("Server failed abruptly, exiting.");
-                    running = false;
-                }
-            }
+    /**
+     * Reads a line from the socket and returns it.
+     * @return The line read from the socket.
+     */
+    public String receiveLine() {
+        String line = null;
+
+        try {
+            line = br.readLine();
         }
         catch(IOException ioe) {
-                System.out.print("Error: ");
-                System.out.println(ioe.getMessage());
-                System.exit(1);
+            System.out.print("Error: ");
+            System.out.println(ioe.getMessage());
+            System.exit(1);
+        }
+
+        if(line == null) {
+            // assume the server quit abruptly so we should exit
+            System.err.println("Server failed abruptly, exiting.");
+            System.exit(1);
+        }
+
+        return line;
+    }
+
+    /**
+     * A method to handle logging in. This is only necessary for formatting
+     * purposes.
+     */
+    public void login() {
+        String line = receiveLine();
+        while(!line.equalsIgnoreCase("login done")) {
+            System.out.print(line);
+            line = receiveLine();
         }
     }
 }

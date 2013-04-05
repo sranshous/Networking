@@ -62,6 +62,7 @@ public class ChatServerThread implements Runnable {
             return; // ends thread
         }
 
+        userLogin();
         while(running) {
             send(MENU);
             String userInput = receiveLine();
@@ -120,7 +121,7 @@ public class ChatServerThread implements Runnable {
 
         if(option == null) {
             System.err.println("Did not choose a valid option.");
-            send("Invalid option chosen. Please choose from the menu");
+            send("Invalid option chosen. Please choose from the menu.");
             return;
         }
 
@@ -129,6 +130,8 @@ public class ChatServerThread implements Runnable {
                 System.err.println("-1 sent, EOF.");
                 System.exit(1);
             case 1:
+                // iterate over the user map and send it over the socket
+                // StringBuilder userList = new StringBuilder();
                 System.err.println("Option 1 chosen.");
                 break;
             case 2:
@@ -161,5 +164,33 @@ public class ChatServerThread implements Runnable {
         Integer userChoice = op - '0';
 
         return userChoice;
+    }
+
+    private void userLogin() {
+        send("Please enter your username: ");
+        String username = receiveLine();
+
+        while(users.containsKey(username)) {
+            send("Sorry that username is taken. Please enter a new username: ");
+            username = receiveLine();
+        }
+
+        // if value == null then it added successfully, otherwise there is
+        // already a user with this login
+
+        // some sort of validation perhaps
+        User connectedUser = new User(
+                username,
+                THREAD_SOCKET.getInetAddress(),
+                THREAD_SOCKET.getPort()
+        );
+
+        User value = users.put(username, connectedUser);
+
+        send("Please enter your password: ");
+        String password = receiveLine();
+
+        // tell the client they logged in
+        send("login done");
     }
 }
