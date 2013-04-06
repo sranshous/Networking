@@ -1,10 +1,3 @@
-/**
- * Handler thread for dealing with clients that connect to the ChatServer.
- * It will prompt them for a login, then present them with a menu of options
- * for them to choose from.
- * @author Stephen Ranshous
- * @see ChatServer
- */
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -14,6 +7,13 @@ import java.net.SocketException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
 
+/**
+ * Handler thread for dealing with clients that connect to the ChatServer.
+ * It will prompt them for a login, then present them with a menu of options
+ * for them to choose from.
+ * @author Stephen Ranshous
+ * @see ChatServer
+ */
 public class ChatServerThread implements Runnable {
     private final Socket THREAD_SOCKET;
     // list of users logged in

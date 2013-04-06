@@ -1,9 +1,3 @@
-/**
- * A chat client that will connect to an IP on a given port and send and receive
- * messages. If no IP and port is provided it will connect to localhost on port
- * 8000.
- * @author Stephen Ranshous
- */
 import java.net.Socket;
 import java.net.ConnectException;
 import java.net.UnknownHostException;
@@ -12,6 +6,12 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.IOException;
 
+/**
+ * A chat client that will connect to an IP on a given port and send and receive
+ * messages. If no IP and port is provided it will connect to localhost on port
+ * 8000.
+ * @author Stephen Ranshous
+ */
 public class ChatClient {
     private Socket requestSocket = null;       // socket to connect to the server
     private BufferedReader br = null;          // for reading from the socket

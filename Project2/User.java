@@ -1,11 +1,11 @@
+import java.net.InetAddress;
+import java.net.Socket;
+
 /**
  * Describes the important features of a user that will be required to
  * have clients connect to other clients.
  * @author Stephen Ranshous
  */
-import java.net.InetAddress;
-import java.net.Socket;
-
 public class User {
     private InetAddress userAddress;
     private int userPort;

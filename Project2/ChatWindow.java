@@ -7,6 +7,10 @@ import javax.swing.JTextArea;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 
+/**
+ * The window to use for a chat session between two clients.
+ * @author Stephen Ranshous
+ */
 public class ChatWindow extends JFrame {
     // this will be the container panel for the GUI, using BorderLayout
     private JPanel main;
@@ -84,4 +88,3 @@ public class ChatWindow extends JFrame {
         cw.showWindow();
     }
 }
-

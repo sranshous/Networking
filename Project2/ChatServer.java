@@ -1,3 +1,8 @@
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
  * A simple chat server that will sit on a port and listen for connections.
  * It receives a connection and then spawns a handler thread that will deal
@@ -5,11 +10,6 @@
  * @author Stephen Ranshous
  * @see ChatServerThread
  */
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.concurrent.ConcurrentHashMap;
-
 public class ChatServer implements Runnable {
     // the port to listen on for clients to connect
     private final int SOCKET_PORT = 8000;

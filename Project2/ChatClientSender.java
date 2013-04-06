@@ -1,13 +1,13 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.PrintWriter;
+
 /**
  * A sender thread for the chat client. It will block on a BufferedReader
  * call to readLine and when it receives a line it will send it over the
  * socket.
  * @author Stephen Ranshous
  */
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.PrintWriter;
-
 public class ChatClientSender implements Runnable {
     private final PrintWriter pw;       // to write to the socket
     private final BufferedReader br;    // to read from the user
