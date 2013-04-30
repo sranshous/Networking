@@ -52,6 +52,20 @@ namespace Networking_Project3
             }
         }
 
+        public void printGraphToFile(string filename)
+        {
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter(filename))
+            {
+                for (int i = 0; i < graph.Count; i++)
+                {
+                    file.WriteLine("Router " + (char)('A' + i));
+                    file.WriteLine("-----------------");
+                    file.WriteLine(graph[i]);
+                    file.WriteLine("\n");
+                }
+            }
+        }
+
         public void findShortestPaths()
         {
             Console.WriteLine("----- Finding paths -----");

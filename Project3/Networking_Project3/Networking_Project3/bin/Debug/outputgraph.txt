@@ -1,0 +1,97 @@
+Router A
+-----------------
+distance:
+	A - 0
+	B - 5
+	C - 8
+	D - 4
+	E - 5
+nextHop:
+	to A is A
+	to B is B
+	to C is B
+	to D is D
+	to E is D
+neighbors:
+	B - 5
+	D - 4
+
+
+Router B
+-----------------
+distance:
+	A - 5
+	B - 0
+	C - 3
+	D - 2
+	E - 3
+nextHop:
+	to A is A
+	to B is B
+	to C is C
+	to D is D
+	to E is D
+neighbors:
+	A - 5
+	C - 3
+	D - 2
+
+
+Router C
+-----------------
+distance:
+	A - 8
+	B - 3
+	C - 0
+	D - 4
+	E - 3
+nextHop:
+	to A is B
+	to B is B
+	to C is C
+	to D is E
+	to E is E
+neighbors:
+	B - 3
+	E - 3
+
+
+Router D
+-----------------
+distance:
+	A - 4
+	B - 2
+	C - 4
+	D - 0
+	E - 1
+nextHop:
+	to A is A
+	to B is B
+	to C is E
+	to D is D
+	to E is E
+neighbors:
+	A - 4
+	B - 2
+	E - 1
+
+
+Router E
+-----------------
+distance:
+	A - 5
+	B - 3
+	C - 3
+	D - 1
+	E - 0
+nextHop:
+	to A is D
+	to B is D
+	to C is C
+	to D is D
+	to E is E
+neighbors:
+	C - 3
+	D - 1
+
+

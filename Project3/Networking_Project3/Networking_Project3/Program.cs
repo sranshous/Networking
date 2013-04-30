@@ -11,6 +11,8 @@ namespace Networking_Project3
             bf.printGraph();
             bf.findShortestPaths();
             bf.printGraph();
+            bf.printGraphToFile("outputgraph.txt");
+            Console.WriteLine("Press any key to exit");
             Console.ReadKey();
         }
     }
