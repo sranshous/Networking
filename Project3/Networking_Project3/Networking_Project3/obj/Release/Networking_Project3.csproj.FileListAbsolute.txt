@@ -4,3 +4,10 @@ C:\Users\Stephen\documents\visual studio 2012\Projects\Networking_Project3\Netwo
 C:\Users\Stephen\documents\visual studio 2012\Projects\Networking_Project3\Networking_Project3\bin\Release\Networking_Project3.pdb
 C:\Users\Stephen\documents\visual studio 2012\Projects\Networking_Project3\Networking_Project3\obj\Release\Networking_Project3.exe
 C:\Users\Stephen\documents\visual studio 2012\Projects\Networking_Project3\Networking_Project3\obj\Release\Networking_Project3.pdb
+C:\Users\Stephen\Documents\GitHub\Networking\Project3\Networking_Project3\Networking_Project3\bin\Release\Networking_Project3.exe.config
+C:\Users\Stephen\Documents\GitHub\Networking\Project3\Networking_Project3\Networking_Project3\obj\Release\Networking_Project3.exe
+C:\Users\Stephen\Documents\GitHub\Networking\Project3\Networking_Project3\Networking_Project3\obj\Release\Networking_Project3.pdb
+C:\Users\Stephen\Documents\GitHub\Networking\Project3\Networking_Project3\Networking_Project3\bin\Release\inputgraph.txt
+C:\Users\Stephen\Documents\GitHub\Networking\Project3\Networking_Project3\Networking_Project3\bin\Release\Networking_Project3.exe
+C:\Users\Stephen\Documents\GitHub\Networking\Project3\Networking_Project3\Networking_Project3\bin\Release\Networking_Project3.pdb
+C:\Users\Stephen\Documents\GitHub\Networking\Project3\Networking_Project3\Networking_Project3\obj\Release\Networking_Project3.csprojResolveAssemblyReference.cache

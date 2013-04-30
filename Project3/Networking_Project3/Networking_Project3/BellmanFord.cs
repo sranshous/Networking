@@ -45,8 +45,10 @@ namespace Networking_Project3
         {
             for (int i = 0; i < graph.Count; i++)
             {
-                Console.WriteLine((char)('A' + i));
+                Console.WriteLine("Router " + (char)('A' + i));
+                Console.WriteLine("-----------------");
                 Console.WriteLine(graph[i]);
+                Console.WriteLine("\n");
             }
         }
 
@@ -104,24 +106,24 @@ namespace Networking_Project3
             {
                 StringBuilder sb = new StringBuilder();
 
-                sb.Append("distance: ");
+                sb.Append("distance:");
                 for (int i = 0; i < distance.Length; i++)
                 {
-                    sb.Append(String.Format("{0, 4}", distance[i]));
+                    sb.Append(String.Format("\n\t{0} - {1}", (char)(i + 'A'), distance[i]));
                 }
                 sb.Append("\n");
 
-                sb.Append("nextHop: ");
+                sb.Append("nextHop:");
                 for (int i = 0; i < distance.Length; i++)
                 {
-                    sb.Append(String.Format("{0, 4}", nextHop[i]));
+                    sb.Append(String.Format("\n\tto {0} is {1}", (char)(i + 'A'), (char)(nextHop[i] + 'A')));
                 }
                 sb.Append("\n");
 
-                sb.Append("neighbors:\n");
+                sb.Append("neighbors:");
                 for (int i = 0; i < neighbors.Count; i++)
                 {
-                    sb.Append((char)(neighbors[i] + 'A') + " " + distance[neighbors[i]] + " " + nextHop[neighbors[i]] + "\n");
+                    sb.Append("\n\t" + (char)(neighbors[i] + 'A') + " - " + distance[neighbors[i]]);
                 }
 
                 return sb.ToString();
