@@ -1,0 +1,7 @@
+c:\users\stephen\documents\visual studio 2012\Projects\Networking_Project3\Networking_Project3\bin\Debug\Networking_Project3.exe.config
+C:\Users\Stephen\documents\visual studio 2012\Projects\Networking_Project3\Networking_Project3\obj\Debug\Networking_Project3.csprojResolveAssemblyReference.cache
+C:\Users\Stephen\documents\visual studio 2012\Projects\Networking_Project3\Networking_Project3\bin\Debug\Networking_Project3.exe
+C:\Users\Stephen\documents\visual studio 2012\Projects\Networking_Project3\Networking_Project3\bin\Debug\Networking_Project3.pdb
+C:\Users\Stephen\documents\visual studio 2012\Projects\Networking_Project3\Networking_Project3\obj\Debug\Networking_Project3.exe
+C:\Users\Stephen\documents\visual studio 2012\Projects\Networking_Project3\Networking_Project3\obj\Debug\Networking_Project3.pdb
+C:\Users\Stephen\documents\visual studio 2012\Projects\Networking_Project3\Networking_Project3\bin\Debug\inputgraph.txt
